@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.telephony.ims.ImsService;
 import android.telephony.ims.feature.ImsFeature;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -235,5 +236,22 @@ public class MmTelFeatureConnectionTest extends ImsTestBase {
         assertFalse(mCallbackManagerUT.isBinderReady());
         mCallbackManagerUT.addCallback(testCallback1);
         assertFalse(mCallbackManagerUT.doesCallbackExist(testCallback1));
+    }
+
+    @Test
+    @SmallTest
+    public void testEmergencyCapabilityUsesBitMask() {
+        MmTelFeatureConnection connection = new MmTelFeatureConnection(
+                mContext, SLOT_ID, SUB_ID, null, null, null, null);
+
+        connection.onFeatureCapabilitiesUpdated(0);
+        assertFalse(connection.isEmergencyMmTelAvailable());
+
+        connection.onFeatureCapabilitiesUpdated(ImsService.CAPABILITY_SIP_DELEGATE_CREATION);
+        assertFalse(connection.isEmergencyMmTelAvailable());
+
+        connection.onFeatureCapabilitiesUpdated(
+                ImsService.CAPABILITY_EMERGENCY_OVER_MMTEL);
+        assertTrue(connection.isEmergencyMmTelAvailable());
     }
 }
