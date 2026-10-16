@@ -572,7 +572,7 @@ public class MmTelFeatureConnection extends FeatureConnection {
     {
         synchronized (mLock) {
             mSupportsEmergencyCalling =
-                    ((capabilities | ImsService.CAPABILITY_EMERGENCY_OVER_MMTEL) > 0);
+                    ((capabilities & ImsService.CAPABILITY_EMERGENCY_OVER_MMTEL) > 0);
         }
     }
 
